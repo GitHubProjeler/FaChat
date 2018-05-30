@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E3D90A40DF98A4E074F49D4 /* Pods_FaChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDBBC73CC0911310A68D1C37 /* Pods_FaChat.framework */; };
 		AC454BEF20BD88DC006CC184 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC454BEE20BD88DC006CC184 /* AppDelegate.swift */; };
 		AC454BF120BD88DC006CC184 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC454BF020BD88DC006CC184 /* ViewController.swift */; };
 		AC454BF420BD88DC006CC184 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AC454BF220BD88DC006CC184 /* Main.storyboard */; };
 		AC454BF720BD88DC006CC184 /* FaChat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AC454BF520BD88DC006CC184 /* FaChat.xcdatamodeld */; };
 		AC454BF920BD88DC006CC184 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC454BF820BD88DC006CC184 /* Assets.xcassets */; };
 		AC454BFC20BD88DC006CC184 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AC454BFA20BD88DC006CC184 /* LaunchScreen.storyboard */; };
+		AC454C0420BD8A83006CC184 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AC454C0320BD8A83006CC184 /* GoogleService-Info.plist */; };
+		AC92328E20BEA5AA00AA87B2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC92328D20BEA5AA00AA87B2 /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +27,11 @@
 		AC454BF820BD88DC006CC184 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AC454BFB20BD88DC006CC184 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AC454BFD20BD88DC006CC184 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AC454C0320BD8A83006CC184 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		AC92328D20BEA5AA00AA87B2 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		D4AF41F09D9690E7180459A1 /* Pods-FaChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FaChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-FaChat/Pods-FaChat.release.xcconfig"; sourceTree = "<group>"; };
+		DC9279ECB4FDA148BFC53F3C /* Pods-FaChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FaChat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FaChat/Pods-FaChat.debug.xcconfig"; sourceTree = "<group>"; };
+		FDBBC73CC0911310A68D1C37 /* Pods_FaChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FaChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,17 +39,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E3D90A40DF98A4E074F49D4 /* Pods_FaChat.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		581489F6C81DA4AAF4F459E3 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				DC9279ECB4FDA148BFC53F3C /* Pods-FaChat.debug.xcconfig */,
+				D4AF41F09D9690E7180459A1 /* Pods-FaChat.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		7E5FA561ADAF8149C0903A1E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FDBBC73CC0911310A68D1C37 /* Pods_FaChat.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		AC454BE220BD88DC006CC184 = {
 			isa = PBXGroup;
 			children = (
 				AC454BED20BD88DC006CC184 /* FaChat */,
 				AC454BEC20BD88DC006CC184 /* Products */,
+				581489F6C81DA4AAF4F459E3 /* Pods */,
+				7E5FA561ADAF8149C0903A1E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,7 +84,9 @@
 		AC454BED20BD88DC006CC184 /* FaChat */ = {
 			isa = PBXGroup;
 			children = (
+				AC454C0320BD8A83006CC184 /* GoogleService-Info.plist */,
 				AC454BEE20BD88DC006CC184 /* AppDelegate.swift */,
+				AC92328D20BEA5AA00AA87B2 /* Constants.swift */,
 				AC454BF020BD88DC006CC184 /* ViewController.swift */,
 				AC454BF220BD88DC006CC184 /* Main.storyboard */,
 				AC454BF820BD88DC006CC184 /* Assets.xcassets */,
@@ -74,9 +104,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AC454C0020BD88DD006CC184 /* Build configuration list for PBXNativeTarget "FaChat" */;
 			buildPhases = (
+				93B34207180CD60D547B20C2 /* [CP] Check Pods Manifest.lock */,
 				AC454BE720BD88DC006CC184 /* Sources */,
 				AC454BE820BD88DC006CC184 /* Frameworks */,
 				AC454BE920BD88DC006CC184 /* Resources */,
+				515FD963590BE9E6685BFDD7 /* [CP] Embed Pods Frameworks */,
+				6EBA9CE9C156A1B7C0105F80 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -127,12 +160,77 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC454BFC20BD88DC006CC184 /* LaunchScreen.storyboard in Resources */,
+				AC454C0420BD8A83006CC184 /* GoogleService-Info.plist in Resources */,
 				AC454BF920BD88DC006CC184 /* Assets.xcassets in Resources */,
 				AC454BF420BD88DC006CC184 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		515FD963590BE9E6685BFDD7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-FaChat/Pods-FaChat-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/JSQMessagesViewController/JSQMessagesViewController.framework",
+				"${BUILT_PRODUCTS_DIR}/JSQSystemSoundPlayer/JSQSystemSoundPlayer.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JSQMessagesViewController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JSQSystemSoundPlayer.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FaChat/Pods-FaChat-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6EBA9CE9C156A1B7C0105F80 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FaChat/Pods-FaChat-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		93B34207180CD60D547B20C2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FaChat-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AC454BE720BD88DC006CC184 /* Sources */ = {
@@ -142,6 +240,7 @@
 				AC454BF720BD88DC006CC184 /* FaChat.xcdatamodeld in Sources */,
 				AC454BF120BD88DC006CC184 /* ViewController.swift in Sources */,
 				AC454BEF20BD88DC006CC184 /* AppDelegate.swift in Sources */,
+				AC92328E20BEA5AA00AA87B2 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,6 +375,7 @@
 		};
 		AC454C0120BD88DD006CC184 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC9279ECB4FDA148BFC53F3C /* Pods-FaChat.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -291,6 +391,7 @@
 		};
 		AC454C0220BD88DD006CC184 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D4AF41F09D9690E7180459A1 /* Pods-FaChat.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
