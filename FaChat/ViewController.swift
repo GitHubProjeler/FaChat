@@ -8,6 +8,8 @@
 
 import UIKit
 import JSQMessagesViewController
+import MobileCoreServices
+import AVKit
 
 class ViewController: JSQMessagesViewController,UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
@@ -90,49 +92,65 @@ class ViewController: JSQMessagesViewController,UIImagePickerControllerDelegate,
     override func didPressAccessoryButton(_ sender: UIButton!) {
         let actionSheet = UIAlertController(title: "Görsel Öğeler", message: "Lütfen bir görsel seçiniz", preferredStyle: .actionSheet) //style .actionSheet alttan çıkan mesaj - alert ortada mesaj
         
-        //Kayıtlı resim seçmek için 1. seçenek olarak Resimler ismi çıkar
+        //Kayıtlı görsel seçme
         let resim = UIAlertAction(title: "Resimler", style: .default){(action) in
-            //kaynak savedPhotoAlbum
-            if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.savedPhotosAlbum){
-                self.imagePicker.delegate = self // Delegate kod ile bağlanıyor
-                self.imagePicker.sourceType = UIImagePickerControllerSourceType.savedPhotosAlbum
-                self.present(self.imagePicker, animated: true, completion:nil)
-            }
+            self.gorselSec(type: kUTTypeImage)//seçilen öğenin türü resim
         }
-        
-        //Kameradan seçim yapmak için
-        let kamera = UIAlertAction(title: "Kamera", style: .default){(action) in
-            if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera){
-                self.imagePicker.delegate = self // Delegate kod ile bağlanıyor
-                self.imagePicker.sourceType = UIImagePickerControllerSourceType.camera
-                self.present(self.imagePicker, animated: true, completion:nil)
-            }
+        let video = UIAlertAction(title: "Video", style: .default){(action) in
+            self.gorselSec(type: kUTTypeMovie)//seçilen öğenin türü video
         }
-    
+
         
         //iptal etmek için
-        let iptal = UIAlertAction(title:"İptal", style: .default, handler: nil)
+        let iptal = UIAlertAction(title:"İptal", style: .cancel, handler: nil)
         
         
         actionSheet.addAction(resim)
-        actionSheet.addAction(kamera)
+        actionSheet.addAction(video)
         actionSheet.addAction(iptal)
         
         self.present(actionSheet, animated: true, completion: nil)
     }
     
+    func gorselSec(type:NSString){
+        self.imagePicker.delegate = self // Delegate kod ile bağlanıyor
+        self.imagePicker.mediaTypes = [type as String]  // media tipi neden string
+        self.present(self.imagePicker, animated: true, completion:nil)
+        
+    }
+    
     //Resim seçilmesi seçildikten sonra resim albümünün kapanması ve resim olarak görünmesi
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
        
-        //seçilen resmin bilgileri alınıyor info ile
+        //resim bilgileri alınarak kütüphanenin anlayacağı şekle dönüştürülüyor
         if let resim = info[UIImagePickerControllerOriginalImage] as? UIImage{
             let image = JSQPhotoMediaItem(image:resim)
             self.messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: image))
         }
+        //videonun bilgileri kütüphanenin anlayacağı şekle dönüştürülüyor
+        else if let video = info[UIImagePickerControllerMediaURL] as? URL{
+            let myVideo = JSQVideoMediaItem(fileURL: video, isReadyToPlay: true)
+            self.messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: myVideo))
+        }
+        
+        
         dismiss(animated: true, completion: nil)
         collectionView.reloadData()
     }
-    
+    //videonun çalıştırılması
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAt indexPath: IndexPath!) {
+        let message = messages[indexPath.item]
+        
+        //tipi sadece media olanlar
+        if message.isMediaMessage{
+            if let videoMesaj = message.media as? JSQVideoMediaItem{ // media olanlardan sadece video olanlar
+                let oynatici = AVPlayer(url: videoMesaj.fileURL) //videonun adresini al
+                let oynaticiKontroller = AVPlayerViewController()
+                oynaticiKontroller.player = oynatici
+                present(oynaticiKontroller, animated: true, completion: nil)
+            }
+        }
+    }
     
 }
 
