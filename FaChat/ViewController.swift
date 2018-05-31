@@ -10,11 +10,26 @@ import UIKit
 import JSQMessagesViewController
 import MobileCoreServices
 import AVKit
+import FirebaseStorage
+import FirebaseDatabase
+import SDWebImage
 
 class ViewController: JSQMessagesViewController,UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     var imagePicker = UIImagePickerController()
     var messages = [JSQMessage]()
+    
+    //Mesajların rengini ayarlama, Bubbles images, outgoingBubble çağrıldığında yapılacak işlemler
+    
+    //Giden mesaj renk ayarı
+    lazy var outgoingBubble:JSQMessagesBubbleImage = {
+        return JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImage(with: UIColor.jsq_messageBubbleGreen())
+    }()
+    //Gelen mesaj renk ayarı
+    lazy var incomingBubble:JSQMessagesBubbleImage = {
+        return JSQMessagesBubbleImageFactory().incomingMessagesBubbleImage(with: UIColor.jsq_messageBubbleBlue())
+        
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +41,66 @@ class ViewController: JSQMessagesViewController,UIImagePickerControllerDelegate,
         
         senderId = "1"
         senderDisplayName = "Fatih"
+        
+        //text Mesaj içeriklerinin ekrana çekilmesi
+        let lastMessages = Constants.dbChats.queryLimited(toLast: 20)//son 20 mesaj gösterilmektedir
+        lastMessages.observe(.childAdded, with: {snapshot in
+            if let data = snapshot.value as? [String:String],
+            let senderId = data["senderId"],
+            let displayName = data["senderName"],
+            let text = data["mesaj"],
+                !text.isEmpty{ //text boş değilse işlem yap
+                if let message = JSQMessage(senderId: senderId, displayName: displayName, text: text){
+                     self.messages.append(message)
+                    self.finishReceivingMessage()
+                   
+                }
+            }
+        })
+        
+        //video Mesaj içeriklerinin ekrana çekilmesi
+        let lastMediaMessages = Constants.dbMedias.queryLimited(toLast: 20)//son 20 mesaj gösterilmektedir
+        lastMediaMessages.observe(.childAdded, with: {snapshot in
+            if let data = snapshot.value as? [String:String],
+                let senderId = data["senderId"],
+                let displayName = data["senderName"],
+                let url = data["url"],
+                !url.isEmpty{ // boş değilse işlem yap
+                if let mediaURL = URL (string:url){
+                    do{
+                        let data = try Data(contentsOf:mediaURL)
+                        if let _ = UIImage(data: data){
+                        let _ = SDWebImageDownloader.shared().downloadImage(with: mediaURL, options: [], progress: nil, completed: { (image, data, error, finish) in
+                            DispatchQueue.main.async {
+                                let photo = JSQPhotoMediaItem(image: image)
+                                if senderId == senderId{
+                                    photo?.appliesMediaViewMaskAsOutgoing = true
+                                } else {
+                                    photo?.appliesMediaViewMaskAsOutgoing = false
+                                }
+                                self.messages.append(JSQMessage(senderId: senderId, displayName: displayName, media: photo))
+                                self.collectionView.reloadData()
+                            }
+                        })
+                            
+                        }
+                        else {
+                            let video = JSQVideoMediaItem(fileURL: mediaURL, isReadyToPlay: true)
+                            if senderId == senderId{
+                                video?.appliesMediaViewMaskAsOutgoing = true
+                            } else {
+                                video?.appliesMediaViewMaskAsOutgoing = false
+                            }
+                            self.messages.append(JSQMessage(senderId: senderId, displayName: displayName, media: video))
+                            self.collectionView.reloadData()
+                        }
+                    }catch{
+                        print("Bir hata oluştu.")
+                    }
+                    
+                }
+            }
+        })
     
     }
     
@@ -38,17 +113,7 @@ class ViewController: JSQMessagesViewController,UIImagePickerControllerDelegate,
         return messages[indexPath.item]
     }
     
-    //Mesajların rengini ayarlama, Bubbles images, outgoingBubble çağrıldığında yapılacak işlemler
-    
-    //Giden mesaj renk ayarı
-    lazy var outgoingBubble:JSQMessagesBubbleImage = {
-        return JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImage(with: UIColor.jsq_messageBubbleGreen())
-    }()
-    //Gelen mesaj renk ayarı
-    lazy var incomingBubble:JSQMessagesBubbleImage = {
-        return JSQMessagesBubbleImageFactory().incomingMessagesBubbleImage(with: UIColor.jsq_messageBubbleLightGray())
-        
-    }()
+  
     
     //mesajın gelen-giden olduğunu anlamak için
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAt indexPath: IndexPath!) -> JSQMessageBubbleImageDataSource! {
@@ -74,14 +139,13 @@ class ViewController: JSQMessagesViewController,UIImagePickerControllerDelegate,
     //Gönder butonuna yapılacak işlemler
     override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
         
-        let ref = Constants.dbRef.childByAutoId() // Uniq id oluşturu
+        let ref = Constants.dbChats.childByAutoId() // Uniq id oluşturu
         let message = ["senderId":senderId, "senderName":senderDisplayName, "mesaj":text]
-        ref.setValue(message)
-        
+
         self.messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, text: text))
         
         collectionView.reloadData()
-        
+        ref.setValue(message)
         finishSendingMessage()
         
     }
@@ -122,15 +186,18 @@ class ViewController: JSQMessagesViewController,UIImagePickerControllerDelegate,
     //Resim seçilmesi seçildikten sonra resim albümünün kapanması ve resim olarak görünmesi
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
        
-        //resim bilgileri alınarak kütüphanenin anlayacağı şekle dönüştürülüyor
+        //resim bilgileri alınarak kütüphanenin anlayacağı şekle dönüştürülüyor ve gönderiliyor
         if let resim = info[UIImagePickerControllerOriginalImage] as? UIImage{
-            let image = JSQPhotoMediaItem(image:resim)
-            self.messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: image))
+//            let image = JSQPhotoMediaItem(image:resim)
+//            self.messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: image))
+       let data = UIImageJPEGRepresentation(resim, 0.05)
+            self.gorselMesajGonderme(image: data, video: nil, senderId: senderId, senderName: senderDisplayName)
         }
-        //videonun bilgileri kütüphanenin anlayacağı şekle dönüştürülüyor
+        //videonun bilgileri kütüphanenin anlayacağı şekle dönüştürülüyor ve gönderiliyor
         else if let video = info[UIImagePickerControllerMediaURL] as? URL{
-            let myVideo = JSQVideoMediaItem(fileURL: video, isReadyToPlay: true)
-            self.messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: myVideo))
+//            let myVideo = JSQVideoMediaItem(fileURL: video, isReadyToPlay: true)
+//            self.messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: myVideo))
+            self.gorselMesajGonderme(image: nil, video: video, senderId: senderId, senderName: senderDisplayName)
         }
         
         
@@ -152,5 +219,46 @@ class ViewController: JSQMessagesViewController,UIImagePickerControllerDelegate,
         }
     }
     
+    func gorselMesajKaydetme(senderId: String, senderName: String, url: String){
+        let data = ["senderId": self.senderId, "senderName": self.senderDisplayName, "url": url];
+        print("***********DATAA:\(data)")
+        Constants.dbMedias.childByAutoId().setValue(data)
+    }
+    
+    func gorselMesajGonderme(image: Data?, video: URL?, senderId: String, senderName: String){
+        if image != nil {
+            Constants.imageStorageRef.child(senderId + "\(NSUUID().uuidString).jpg").putData(image!, metadata: nil) {(metadata: StorageMetadata?, error: Error?) in
+                
+                if error != nil{
+                    print(error!)
+                } else {
+                 //   let downloadUrl = metadata!.downloadURL()
+                 //   downloadUrl?.absoluteString
+                    self.gorselMesajKaydetme(senderId: senderId, senderName: self.senderDisplayName, url: String(describing: metadata!.downloadURL()!))
+                    
+                }
+                
+            }
+        } else {
+            Constants.videoStorageRef.child(senderId + "\(NSUUID().uuidString)").putFile(from: video!, metadata: nil){(metadata: StorageMetadata?, error: Error?) in
+            if error != nil {
+                print(error!)
+            } else {
+                self.gorselMesajKaydetme(senderId: senderId, senderName:self.senderDisplayName, url: String(describing: metadata!.downloadURL()!))
+            }
+        }
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
 

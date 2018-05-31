@@ -9,6 +9,7 @@ target 'FaChat' do
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
   pod 'Firebase/Auth'
+  pod 'SDWebImage', '~> 4.0'
   # Pods for FaChat
 
 end
